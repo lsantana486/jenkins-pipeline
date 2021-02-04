@@ -1,7 +1,8 @@
 node('master') {
   checkout scm
   sh "ls -la"
-  def client = evaluate(new File('RestClient.groovy'))
+  def wd = sh(script: 'pwd', returnStdout: true).trim()
+  def client = evaluate(new File("${wd}/RestClient.groovy"))
 
   def resp = client.post('http://httpbin.org/post', [
     jobName       : env.JOB_NAME
