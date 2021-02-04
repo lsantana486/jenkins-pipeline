@@ -1,12 +1,19 @@
+@Grapes(
+    @Grab(group='org.codehaus.groovy.modules.http-builder', module='http-builder', version='0.7.1')
+)
+
+import groovyx.net.http.HTTPBuilder
+import static groovyx.net.http.ContentType.*
+import static groovyx.net.http.Method.*
+
 node('master') {
   checkout scm
-  sh "ls -la"
-  def wd = sh(script: 'pwd', returnStdout: true).trim()
-  def client = evaluate(new File("${wd}/RestClient.groovy"))
+  def http = new HTTPBuilder("http://httpbin.org/post'")
+  http.request(POST, JSON ) { req ->
+    body = []
+    response.success = { resp, reader ->
+        println "$resp.statusLine   Respond rec"
 
-  def resp = client.post('http://httpbin.org/post', [
-    jobName       : env.JOB_NAME
-  ])
-  assert resp.status == 201
-  println "${resp}"
+    }
+  }
 }
