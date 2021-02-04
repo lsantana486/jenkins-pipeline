@@ -1,4 +1,5 @@
 node('master') {
+  checkout scm
   def client = evaluate(new File('RestClient.groovy'))
 
   def resp = client.post('http://httpbin.org/post', [
