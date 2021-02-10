@@ -12,7 +12,7 @@ node('master') {
   conn.setRequestMethod("GET")
   if (conn.getResponseCode().equals(200)){
     def slurper = new groovy.json.JsonSlurper()
-    def result = slurper.parseText(con.getInputStream().getText());
+    def result = slurper.parseText(conn.getInputStream().getText());
     println "RESPONSE: ${result.items}"
   } else {
     println "RESPONSE: error"
