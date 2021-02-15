@@ -1,0 +1,23 @@
+{
+  "name": "node-hello",
+  "version": "2.0.0-snapshot",
+  "description": "https://test.com",
+  "homepage": "http://e.e",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "async": "^1.4.2",
+    "express": "^4.13.3",
+    "jsforce": "^1.5.0",
+    "moment": "^2.10.6",
+    "mongoose": "^4.1.11"
+  },
+  "contributors": [
+    "https://test.com"
+  ]
+}
