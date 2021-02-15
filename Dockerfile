@@ -1,3 +1,3 @@
 FROM node:latest
-RUN npm install
+USER root
 
