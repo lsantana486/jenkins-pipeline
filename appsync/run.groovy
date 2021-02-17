@@ -11,7 +11,7 @@ dir('api') {
     ],
     userRemoteConfigs: [[url: "${params.GIT_URL}"]]
   ])
-  withAWS(profile:'amplify-datalegion') {
+  withAWS(credentials:'amplify') {
     sh 'bash $WORKSPACE/appsync/amplify-headless.sh'
     sh 'amplify status'
   }
