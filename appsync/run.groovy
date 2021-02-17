@@ -1,4 +1,3 @@
-//sh "cp appsync/amplify-headless.sh /Users/l.santana/.jenkins/workspace/POC/"
 sh "mkdir -p api"
 dir('api') {
   checkout ([
@@ -13,7 +12,7 @@ dir('api') {
     userRemoteConfigs: [[url: "${params.GIT_URL}"]]
   ])
   withAWS(profile:'amplify-datalegion') {
-    //sh 'bash /Users/l.santana/.jenkins/workspace/POC/amplify-headless.sh'
     sh 'bash $WORKSPACE/appsync/amplify-headless.sh'
+    sh 'amplify status'
   }
 }
