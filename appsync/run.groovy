@@ -1,5 +1,5 @@
-sh "cp appsync/amplify-headless.sh /Users/l.santana/.jenkins/workspace/POC/ && alias amplify-headless='/Users/l.santana/.jenkins/workspace/POC/amplify-headless.sh'"
-sh "ls -la /Users/l.santana/.jenkins/workspace/POC/"
+//sh "cp appsync/amplify-headless.sh /Users/l.santana/.jenkins/workspace/POC/"
+sh "mkdir -p api && cd api"
 checkout ([
   $class: 'GitSCM',
   branches: [[name: "${params.BRANCH}"]],
@@ -11,7 +11,7 @@ checkout ([
   ],
   userRemoteConfigs: [[url: "${params.GIT_URL}"]]
 ])
-sh "ls -la /Users/l.santana/.jenkins/workspace/POC/"
 withAWS(profile:'amplify-datalegion') {
-  sh "amplify-headless"
+  sh 'aws s3 ls'
+  sh 'bash $WORKSPACE/appsync/amplify-headless.sh'
 }
