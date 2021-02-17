@@ -10,11 +10,8 @@ CONFIG="{\
 }"
 AWSCLOUDFORMATIONCONFIG="{\
 \"configLevel\":\"project\",\
-\"useProfile\":false,\
-\"profileName\":\"default\",\
-\"accessKeyId\":\"$AWS_ACCESS_KEY_ID\",\
-\"secretAccessKey\":\"$AWS_SECRET_ACCESS_KEY\",\
-\"region\":\"us-east-1\"\
+\"useProfile\":true,\
+\"profileName\":\"default\"
 }"
 AMPLIFY="{\
 \"projectName\":\"amplifyheadlessci\",\
