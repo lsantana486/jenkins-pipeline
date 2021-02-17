@@ -29,9 +29,32 @@ FRONTEND="{\
 PROVIDERS="{\
 \"awscloudformation\":$AWSCLOUDFORMATIONCONFIG\
 }"
+CODEGEN="{\
+\"generateCode\":true,\
+\"codeLanguage\":\"javascript\",\
+\"fileNamePattern\":\"src/graphql/**/*.js\",\
+\"generatedFileName\":\"API\",\
+\"generateDocs\":true\
+}"
 
-amplify init \
---amplify $AMPLIFY \
---frontend $FRONTEND \
---providers $PROVIDERS \
---yes
+case $1 in
+  init)
+    amplify init --amplify $AMPLIFY --frontend $FRONTEND --providers $PROVIDERS --yes
+    ;;
+
+  push)
+    amplify push --codegen $CODEGEN --yes
+    ;;
+
+  status)
+    amplify status
+    ;;
+
+  delete)
+    amplify delete --force
+    ;;
+
+  *)
+    echo "Please choose a valid action: init, push"
+    ;;
+esac

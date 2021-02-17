@@ -12,7 +12,8 @@ dir('api') {
     userRemoteConfigs: [[url: "${params.GIT_URL}"]]
   ])
   withAWS(credentials:'amplify') {
-    sh 'bash $WORKSPACE/appsync/amplify-headless.sh'
-    sh 'amplify status'
+    sh 'bash $WORKSPACE/appsync/amplify-headless.sh init'
+    sh 'bash $WORKSPACE/appsync/amplify-headless.sh status'
+    sh 'bash $WORKSPACE/appsync/amplify-headless.sh push'
   }
 }
