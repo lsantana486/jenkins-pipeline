@@ -11,7 +11,7 @@ CONFIG="{\
 AWSCLOUDFORMATIONCONFIG="{\
 \"configLevel\":\"project\",\
 \"useProfile\":true,\
-\"profileName\":\"default\"
+\"profileName\":\"amplify-datalegion\"
 }"
 AMPLIFY="{\
 \"projectName\":\"amplifyheadlessci\",\
