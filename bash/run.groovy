@@ -2,7 +2,7 @@ def test = sh(script: 'for rs in \$(find ./bash/ -type f \\( -iname \"*.ruleset\
 println "TEST: ${test}"
 
 def cmd = "sleep 10 && echo test && exit 0"
-def bPID = sh(script: "bash bg-process.sh \"${cmd}\"", returnStdout: true)
+def bPID = sh(script: "chmod +x bg-process.sh && ./bg-process.sh \"${cmd}\"", returnStdout: true)
 println "PID: ${bPID}"
 sh "wait ${bPID} && echo \$?"
 
