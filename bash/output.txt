@@ -1,0 +1,23 @@
+[CfnGuardS3Bucket] failed because [BucketName] is [{"Fn::Sub":"${Application}-${Environment}-${Service}-Bucket"}] and S3 Bucket Name should comply with naming conventions https://docsprod.turner.com/display/MSCTeam/Resource+Naming+Conventions
+Number of failures: 1
+
+
+[CfnGuardS3Bucket] failed because [AccessControl] is [BucketOwnerFullControl] and the permitted value is [Private]
+[CfnGuardS3Bucket] failed because [PublicAccessBlockConfiguration] is [{"BlockPublicAcls":false,"BlockPublicPolicy":true,"IgnorePublicAcls":false,"RestrictPublicBuckets":true}] and the permitted value is [{"BlockPublicAcls":true,"BlockPublicPolicy":true,"IgnorePublicAcls":true,"RestrictPublicBuckets":true}]
+[CfnGuardWebACL] failed because [Rules] is [[{"Action":{"Type":"ALLOW"},"Priority":1,"RuleId":{"Ref":"CfnGuardIPSetRule"}}]] and the permitted value is [[{"Action":{"Type":"BLOCK"},"Priority":1,"RuleId":{"Ref":"CfnGuardIPSetRule"}}]]
+Number of failures: 3
+
+
+[CfnGuardPoCLambdaRole] failed because [RoleName] is [${Application}-${Environment}-${Service}] and Role Name should comply with naming conventions https://docsprod.turner.com/display/MSCTeam/Resource+Naming+Conventions
+[CfnGuardS3Bucket] failed because [BucketName] is [{"Fn::Sub":"${Application}-${Environment}-${Service}-Bucket"}] and S3 Bucket Name should comply with naming conventions https://docsprod.turner.com/display/MSCTeam/Resource+Naming+Conventions
+Number of failures: 2
+
+
+[CfnGuardS3Bucket] failed because [AccessControl] is [BucketOwnerFullControl] and the permitted value is [Private]
+[CfnGuardS3Bucket] failed because [PublicAccessBlockConfiguration] is [{"BlockPublicAcls":false,"BlockPublicPolicy":true,"IgnorePublicAcls":false,"RestrictPublicBuckets":true}] and the permitted value is [{"BlockPublicAcls":true,"BlockPublicPolicy":true,"IgnorePublicAcls":true,"RestrictPublicBuckets":true}]
+[CfnGuardWebACL] failed because [Rules] is [[{"Action":{"Type":"ALLOW"},"Priority":1,"RuleId":{"Ref":"CfnGuardIPSetRule"}}]] and the permitted value is [[{"Action":{"Type":"BLOCK"},"Priority":1,"RuleId":{"Ref":"CfnGuardIPSetRule"}}]]
+Number of failures: 3
+[CreatePlaceholdersFunction] failed because it does not contain the required property of [AutoPublishAlias]
+[IngestionTriggerFunction] failed because it does not contain the required property of [AutoPublishAlias]
+Number of failures: 2
+
