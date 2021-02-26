@@ -6,6 +6,7 @@ def test = sh(script: 'find ./bash/ -type f \\( -iname \"*.ruleset\" ! -iname \"
 println "TEST: ${test}"
 
 for(ruleset in readJSON(text: test)) {
-  sh "cat ${ruleset}"
+  output += sh(script: "cat ${ruleset}", returnStdout: true).trim() << "\n"
 }
 
+println "OUTPUT: ${output}"
