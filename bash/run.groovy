@@ -4,12 +4,12 @@
 def test = sh(script: '[[ -f ./bash/WM-METADATA.json ]] && cat ./bash/WM-METADATA.json || echo \'{"ignore-exception-ruleset": true}\'', returnStdout: true)
 def testJson = readJSON(text: test)
 def ignoreExceptionRuleset = testJson['ignore-exception-ruleset']
-def findCmd = ignoreExceptionRuleset ? "find ./rulesets/ -type f \\( -iname \"*.strict.ruleset\" ! -iname \"*.exception.strict.ruleset\" \\)" : "find ./rulesets/ -name \"*.strict.ruleset\""
+def findCmd = ignoreExceptionRuleset ? "find ./bash/ -type f \\( -iname \"*.strict.ruleset\" ! -iname \"*.exception.strict.ruleset\" \\)" : "find ./bash/ -name \"*.strict.ruleset\""
 def execSc = sh(script: findCmd, returnStdout: true)
 println "${execSc}"
 
 
-findCmd = ignoreExceptionRuleset ? "find ./rulesets/ -type f \\( -iname \"*.ruleset\" ! -iname \"*.exception.ruleset\" ! -iname \"*.strict.ruleset\" \\)" : "find ./rulesets/ -type f \\( -iname \"*.ruleset\" ! -iname \"*.strict.ruleset\" \\)"
+findCmd = ignoreExceptionRuleset ? "find ./bash/ -type f \\( -iname \"*.ruleset\" ! -iname \"*.exception.ruleset\" ! -iname \"*.strict.ruleset\" \\)" : "find ./bash/ -type f \\( -iname \"*.ruleset\" ! -iname \"*.strict.ruleset\" \\)"
 execSc = sh(script: findCmd, returnStdout: true)
 println "${execSc}"
 /*
