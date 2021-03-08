@@ -1,7 +1,14 @@
 // Test process
 //println "$WORKSPACE/bash/bg-process.sh".execute().text
 
-
+def test = sh(script: '[[ -f ./bash/WM-METADATA.json ]] && cat ./bash/WM-METADATA.json || echo \'{"ignore-exception-ruleset": true}\'', returnStdout: true)
+def testJson = readJSON(text: test)
+if (testJson['ignore-exception-ruleset']) {
+  echo "True"
+} else {
+  echo "False"
+}
+/*
 def test = sh(script: 'find ./bash/ -type f \\( -iname \"*.ruleset\" ! -iname \"*.strict.ruleset\" \\) | jq -R . | jq -s .', returnStdout: true)
 println "TEST: ${test}"
 
@@ -36,3 +43,4 @@ for (st in splitTest) {
     }
 }
 println newTest.join('\n')
+*/
