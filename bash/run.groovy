@@ -1,6 +1,7 @@
 // Test process
-//println "$WORKSPACE/bash/bg-process.sh".execute().text
+sh "$WORKSPACE/bash/bg-process.sh 'while :; do echo Hello; sleep 2; done' '[ -f stop ] && echo 1 || echo 0'"
 
+/*
 def test = sh(script: '[[ -f ./bash/WM-METADATA.json ]] && cat ./bash/WM-METADATA.json || echo \'{"ignore-exception-ruleset": true}\'', returnStdout: true)
 def testJson = readJSON(text: test)
 def ignoreExceptionRuleset = testJson['ignore-exception-ruleset']
@@ -12,6 +13,8 @@ println "${execSc}"
 findCmd = ignoreExceptionRuleset ? "find ./bash/ -type f \\( -iname \"*.ruleset\" ! -iname \"*.exception.ruleset\" ! -iname \"*.strict.ruleset\" \\)" : "find ./bash/ -type f \\( -iname \"*.ruleset\" ! -iname \"*.strict.ruleset\" \\)"
 execSc = sh(script: findCmd, returnStdout: true)
 println "${execSc}"
+*/
+
 /*
 def test = sh(script: 'find ./bash/ -type f \\( -iname \"*.ruleset\" ! -iname \"*.strict.ruleset\" \\) | jq -R . | jq -s .', returnStdout: true)
 println "TEST: ${test}"
