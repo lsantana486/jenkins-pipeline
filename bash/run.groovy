@@ -1,6 +1,6 @@
 sh """
 TEST=hola
-echo $TEST
+echo \$TEST
 """
 
 /* Test exec process on bg with stoper
