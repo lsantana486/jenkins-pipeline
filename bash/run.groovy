@@ -1,7 +1,13 @@
-// Test process
-sh "$WORKSPACE/bash/bg-process.sh 'while :; do echo Hello; sleep 2; done' '[ -f stop ] && echo 1 || echo 0'"
+sh """
+TEST=hola
+echo $TEST
+"""
 
-/*
+/* Test exec process on bg with stoper
+sh "$WORKSPACE/bash/bg-process.sh 'while :; do echo Hello; sleep 2; done' '[ -f stop ] && echo 1 || echo 0'"
+*/
+
+/* Test Flags
 def test = sh(script: '[[ -f ./bash/WM-METADATA.json ]] && cat ./bash/WM-METADATA.json || echo \'{"ignore-exception-ruleset": true}\'', returnStdout: true)
 def testJson = readJSON(text: test)
 def ignoreExceptionRuleset = testJson['ignore-exception-ruleset']
@@ -15,7 +21,7 @@ execSc = sh(script: findCmd, returnStdout: true)
 println "${execSc}"
 */
 
-/*
+/* Tes flags 2
 def test = sh(script: 'find ./bash/ -type f \\( -iname \"*.ruleset\" ! -iname \"*.strict.ruleset\" \\) | jq -R . | jq -s .', returnStdout: true)
 println "TEST: ${test}"
 
