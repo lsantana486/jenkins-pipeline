@@ -12,7 +12,7 @@ eval "$CMD" 2>&1 >> output.log &
 PID=$!
 echo "Brackground process PID: $PID"
 
-while kill -0 "$PID"; do
+while ps -p "$PID" > /dev/null; do
   if [ $(eval "$BREAK_CMD") = 1 ] 
   then
     echo "Stoping $PID"
