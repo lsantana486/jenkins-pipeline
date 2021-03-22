@@ -1,4 +1,4 @@
-environmentDashboard(addColumns: false, buildJob: '', buildNumber: 'Version-2', componentName: 'Script-1', nameOfEnv: 'Environment-Dev', packageName: '') {
+environmentDashboard(addColumns: false, buildJob: '', buildNumber: 'Version-2', componentName: 'Script-1', nameOfEnv: 'Environment-Dev', packageName: '',  data: [[columnName: 'Col1', contents: 'Column 1 contents']]) {
   sh """
 TEST=hola
 echo \$TEST
