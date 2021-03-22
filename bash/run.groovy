@@ -1,10 +1,16 @@
-environmentDashboard(addColumns: true, buildJob: 'Run Bash', buildNumber: 'Version-1', componentName: 'Script-1', data: [[columnName: 'Test', contents: 'TEST'], [columnName: 'Col1', contents: 'Column 2 contents']], nameOfEnv: 'Environment-Dev', packageName: '') {
-  sh """
-TEST=hola
-echo \$TEST
-  """
+environmentDashboard {
+  environmentName('Environment-Dev')
+  componentName('Script-1')
+  buildNumber('Version-1')
+  addColumns(true)
+  column('Col1', 'Column 1 contents')
+  column('Col2', 'Column 2 contents')
 }
 
+sh """
+TEST=hola
+echo \$TEST
+"""
 
 /* Test exec process on bg with stoper
 sh "$WORKSPACE/bash/bg-process.sh 'while :; do echo Hello; sleep 2; done' '[ -f stop ] && echo 1 || echo 0'"
