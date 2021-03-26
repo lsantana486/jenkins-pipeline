@@ -1,10 +1,21 @@
+job('test') {
+  wrappers {
+    environmentDashboard {
+      environmentName('Environment-1')
+      componentName('WebApp-1')
+      buildNumber('Version-1')
+    }
+    sh "ls -la"
+  }
+}
+/*
 environmentDashboard(addColumns: false, buildJob: '', buildNumber: 'Version-2', componentName: 'Script-1', nameOfEnv: 'Environment-Dev', packageName: '',  data: [[columnName: 'Col1', contents: 'Column 1 contents']]) {
   sh """
 TEST=hola
 echo \$TEST
   """
 }
-
+*/
 
 /* Test exec process on bg with stoper
 sh "$WORKSPACE/bash/bg-process.sh 'while :; do echo Hello; sleep 2; done' '[ -f stop ] && echo 1 || echo 0'"
