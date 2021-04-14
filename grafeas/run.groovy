@@ -1,5 +1,5 @@
 withFolderProperties {
-    def nexusURL = "http://localhost:8081"
+    def nexusURL = "http://192.168.0.124:8081"
     def config = [
       sharedlibs: [
         python: [
@@ -24,9 +24,10 @@ withFolderProperties {
           snapshotsRepositoryUrl: "${nexusURL}/repository/wm-maven2-snapshot/"
         ],
         customImg: [
-          dockerImage: "localhost:8081/wm-custom-img:latest"
+          dockerImage: "wm-custom-img:latest"
         ]
-      ]
+      ],
+      nexusURL: "http://192.168.0.124:8081"
     ]
     checkout ([
       $class: 'GitSCM',
@@ -216,7 +217,7 @@ def getVersionModel(version) {
 
 def searchArtifactOnRepository(config, artifactName, artifactVersion, artifactRepository) {
   withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'nexus', usernameVariable: 'user', passwordVariable: 'pass']]) {
-    def responseRaw = sh(label: 'Query Nexus', script: "curl -u ${user}:${pass} -X GET 'http://localhost:8081/service/rest/v1/search?repository=${artifactRepository}&name=${artifactName}&version=${artifactVersion}'", returnStdout: true)
+    def responseRaw = sh(label: 'Query Nexus', script: "curl -u ${user}:${pass} -X GET '${config.nexusURL}/service/rest/v1/search?repository=${artifactRepository}&name=${artifactName}&version=${artifactVersion}'", returnStdout: true)
     println "RESPONSE RAW: ${responseRaw}"
     def response = readJSON(text: responseRaw)
     return response;
