@@ -130,7 +130,7 @@ def factoryBuilderPythonPackage() {
     /* CHECK SEMANTIC VERSION */
     validateSemanticVersion(artifact.version, config.sharedlibs.python.semanticVersionPattern)
     /* ADD METADATA */
-    sh "echo \"[metadata]\nurl = ${config.appcode.scm}\nmaintainer = ${config.job.url}\n\" > setup.cfg"
+    sh "echo \"[metadata]\nurl = ${env.GIT_URL}\nmaintainer = ${env.BUILD_URL}\n\" > setup.cfg"
     /* BUILD */
     sh "python3.8 setup.py bdist_wheel"
     return artifact;
@@ -155,7 +155,7 @@ def factoryBuilderNPMPackage() {
     /* CHECK SEMANTIC VERSION */
     validateSemanticVersion(artifact.version, config.sharedlibs.node.semanticVersionPattern)
     /* ADD METADATA */
-    sh "cat package.json | jq '.homepage = \"${config.appcode.scm}\" | .contributors = [\"${config.job.url}\"]' | tee package.json"
+    sh "cat package.json | jq '.homepage = \"${env.GIT_URL}\" | .contributors = [\"${env.BUILD_URL}\"]' | tee package.json"
     /* BUILD */
     sh "npm pack"
     return artifact;
@@ -216,7 +216,7 @@ def getVersionModel(version) {
 
 def searchArtifactOnRepository(config, artifactName, artifactVersion, artifactRepository) {
   withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'nexus', usernameVariable: 'user', passwordVariable: 'pass']]) {
-    def responseRaw = sh(label: 'Query Nexus', script: "curl -u ${user}:${pass} -X GET 'https://${config.tools.nexusDomain}/service/rest/v1/search?repository=${artifactRepository}&name=${artifactName}&version=${artifactVersion}'", returnStdout: true)
+    def responseRaw = sh(label: 'Query Nexus', script: "curl -u ${user}:${pass} -X GET 'http://localhost:8081/service/rest/v1/search?repository=${artifactRepository}&name=${artifactName}&version=${artifactVersion}'", returnStdout: true)
     println "RESPONSE RAW: ${responseRaw}"
     def response = readJSON(text: responseRaw)
     return response;
