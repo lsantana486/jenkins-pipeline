@@ -1,5 +1,4 @@
 withFolderProperties {
-  ansiColor('xterm') {
     checkout scm
     def nexusURL = "http://localhost:8081"
     def config = [
@@ -51,7 +50,6 @@ withFolderProperties {
     stage("Publish Artifact") {
       publishArtifact(config, artifactTypeSettings, builtArtifact.version)
     }
-  }
 }
 
 def detectArtifactTypeSettings() {
