@@ -1,5 +1,4 @@
 withFolderProperties {
-    checkout scm
     def nexusURL = "http://localhost:8081"
     def config = [
       sharedlibs: [
