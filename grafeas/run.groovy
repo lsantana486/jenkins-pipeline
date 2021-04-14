@@ -25,7 +25,7 @@ withFolderProperties {
           snapshotsRepositoryUrl: "${nexusURL}/repository/wm-maven2-snapshot/"
         ],
         customImg: [
-          dockerImage: "${nexusURL}/wm-custom-img:latest"
+          dockerImage: "localhost:8081/wm-custom-img:latest"
         ]
       ]
     ]
