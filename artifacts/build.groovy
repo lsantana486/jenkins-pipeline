@@ -50,6 +50,9 @@ withFolderProperties {
     stage("Publish Artifact") {
       publishArtifact(config, artifactTypeSettings, builtArtifact.version)
     }
+    stagte("Add Grafeas Occurence") {
+      addGrafeasOccurence(config, builtArtifact, artifactTypeSettings)
+    }
 }
 
 def detectArtifactTypeSettings() {
@@ -116,11 +119,6 @@ def publishArtifact(config, artifactTypeSettings, builtVersion) {
 def customImgBuildPackage(config) {
   def image = docker.build(config.sharedlibs.customImg.dockerImage, ".")
   return image;
-}
-
-def isBuiltSnapshotVersionPublished(config, builtArtifact, artifactTypeSettings) {
-  def responseSearch = searchArtifactOnRepository(config, builtArtifact.name, builtArtifact.version.toLowerCase().replace("snapshot", "*"), artifactTypeSettings.runtime.snapshotsRepositoryName)
-  return (responseSearch?.items ? responseSearch.items : []).size() > 0
 }
 
 def factoryBuilderPythonPackage() {
@@ -222,4 +220,55 @@ def searchArtifactOnRepository(config, artifactName, artifactVersion, artifactRe
     def response = readJSON(text: responseRaw)
     return response;
   }
+}
+
+def addGrafeasOccurence(config, builtArtifact, artifactTypeSettings) {
+  def responseSearch = searchArtifactOnRepository(config, builtArtifact.name, builtArtifact.version.toLowerCase().replace("snapshot", "*"), artifactTypeSettings.runtime.snapshotsRepositoryName)
+  /*
+  sh """
+curl --location --request POST 'http://localhost:8085/v1beta1/projects/occurrences/occurrences' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+    "name": "projects/occurrences/occurrences/mypylibBuildOccurrence",
+    "resource": {
+        "name": "mypylib",
+        "uri": "http://192.168.0.124:8081/repository/wm-pypi-snapshot/packages/mypylib/0.2.1+snapshot/mypylib-0.2.1+snapshot-py3-none-any.whl"
+    },
+    "noteName": "projects/provider_1/notes/mypylib",
+    "kind": "BUILD",
+    "build": {
+        "provenance": {
+            "id": "0.2.1+snapshot",
+            "project_id": "mypylib",
+            "commands": [],
+            "built_artifacts": [
+                {
+                    "checksum": "b73c66a13c024d23d2df26593a0e29d6eec47dd5891ad414610b5b55774e859d",
+                    "id": "default@8E8C24D1-29A1A1ED-B82F76FF-C4F14E16-2F8A768B:2346b893-2988-425a-8ac7-a263519665ed",
+                    "names": []
+                }
+            ],
+            "create_time": "2021-04-14T23:09:12.733Z",
+            "start_time": "2021-04-14T23:07:12.733Z",
+            "end_time": "2021-04-14T23:09:12.733Z",
+            "creator": "lsantana",
+            "logs_uri": "http://localhost:8080/job/POC/job/buildArtifacts/14/console",
+            "source_provenance": {
+                "artifact_storage_source_uri": "http://localhost:8081/#browse/browse:wm-pypi-snapshot:mypylib%2F0.2.1%2Bsnapshot%2Fmypylib-0.2.1%2Bsnapshot-py3-none-any.whl",
+                "context": {
+                    "git": {
+                        "url": "https://github.com/lsantana486/test-pythonlib",
+                        "revision_id": "03916dddbb3b4aad2adb3bc0f66f32d140e1db0b"
+                    },
+                    "labels": {}
+                }
+            },
+            "trigger_id": "03916dddbb3b4aad2adb3bc0f66f32d140e1db0b",
+            "builder_version": "1.0.0"
+        },
+        "provenance_bytes": "Z3JhZmVhcw=="
+    }
+}'
+    """
+    */
 }
