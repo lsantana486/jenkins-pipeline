@@ -223,7 +223,8 @@ def searchArtifactOnRepository(config, artifactName, artifactVersion, artifactRe
 }
 
 def addGrafeasOccurence(config, builtArtifact, artifactTypeSettings) {
-  def responseSearch = searchArtifactOnRepository(config, builtArtifact.name, builtArtifact.version.toLowerCase().replace("snapshot", "*"), artifactTypeSettings.runtime.snapshotsRepositoryName)
+  def repositoryURL = getRepositoryURL(builtArtifact.version, artifactTypeSettings.runtime.snapshotsRepositoryName, artifactTypeSettings.runtime.releaseRepositoryName)
+  def responseSearch = searchArtifactOnRepository(config, builtArtifact.name, builtArtifact.version.toLowerCase().replace("snapshot", "*"), repositoryURL)
   def shortCommit = sh(returnStdout: true, script: "git log -n 1 --pretty=format:'%h'").trim()
   sh """curl --location --request POST 'http://192.168.0.124:8085/v1beta1/projects/occurrences/occurrences' \
 --header 'Content-Type: application/json' \
