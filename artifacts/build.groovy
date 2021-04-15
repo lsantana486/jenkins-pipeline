@@ -269,5 +269,4 @@ def addGrafeasOccurence(config, builtArtifact, artifactTypeSettings) {
     }
 }'
     """
-    */
 }
