@@ -50,7 +50,7 @@ withFolderProperties {
     stage("Publish Artifact") {
       publishArtifact(config, artifactTypeSettings, builtArtifact.version)
     }
-    stagte("Add Grafeas Occurence") {
+    stage("Add Grafeas Occurence") {
       addGrafeasOccurence(config, builtArtifact, artifactTypeSettings)
     }
 }
