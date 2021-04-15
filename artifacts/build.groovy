@@ -224,46 +224,45 @@ def searchArtifactOnRepository(config, artifactName, artifactVersion, artifactRe
 
 def addGrafeasOccurence(config, builtArtifact, artifactTypeSettings) {
   def responseSearch = searchArtifactOnRepository(config, builtArtifact.name, builtArtifact.version.toLowerCase().replace("snapshot", "*"), artifactTypeSettings.runtime.snapshotsRepositoryName)
-  /*
-  sh """
-curl --location --request POST 'http://localhost:8085/v1beta1/projects/occurrences/occurrences' \
+  def shortCommit = sh(returnStdout: true, script: "git log -n 1 --pretty=format:'%h'").trim()
+  sh """curl --location --request POST 'http://192.168.0.124:8085/v1beta1/projects/occurrences/occurrences' \
 --header 'Content-Type: application/json' \
 --data-raw '{
-    "name": "projects/occurrences/occurrences/mypylibBuildOccurrence",
+    "name": "projects/occurrences/occurrences/${builtArtifact.name}BuildOccurrence",
     "resource": {
-        "name": "mypylib",
-        "uri": "http://192.168.0.124:8081/repository/wm-pypi-snapshot/packages/mypylib/0.2.1+snapshot/mypylib-0.2.1+snapshot-py3-none-any.whl"
+        "name": "${builtArtifact.name}",
+        "uri": "${responseSearch.items[0].assets[0].downloadUrl}"
     },
-    "noteName": "projects/provider_1/notes/mypylib",
+    "noteName": "projects/provider_1/notes/${builtArtifact.name}",
     "kind": "BUILD",
     "build": {
         "provenance": {
-            "id": "0.2.1+snapshot",
-            "project_id": "mypylib",
+            "id": "${responseSearch.items[0].version}",
+            "project_id": "${builtArtifact.name}",
             "commands": [],
             "built_artifacts": [
                 {
-                    "checksum": "b73c66a13c024d23d2df26593a0e29d6eec47dd5891ad414610b5b55774e859d",
-                    "id": "default@8E8C24D1-29A1A1ED-B82F76FF-C4F14E16-2F8A768B:2346b893-2988-425a-8ac7-a263519665ed",
+                    "checksum": "${responseSearch.items[0].assets[0].checksum.sha256}",
+                    "id": "${responseSearch.items[0].assets[0].id}",
                     "names": []
                 }
             ],
-            "create_time": "2021-04-14T23:09:12.733Z",
-            "start_time": "2021-04-14T23:07:12.733Z",
-            "end_time": "2021-04-14T23:09:12.733Z",
+            "create_time": "${responseSearch.items[0].assets[0].lastModified}",
+            "start_time": "${responseSearch.items[0].assets[0].lastModified}",
+            "end_time": "${responseSearch.items[0].assets[0].lastModified}",
             "creator": "lsantana",
-            "logs_uri": "http://localhost:8080/job/POC/job/buildArtifacts/14/console",
+            "logs_uri": "${env.BUILD_URL}",
             "source_provenance": {
-                "artifact_storage_source_uri": "http://localhost:8081/#browse/browse:wm-pypi-snapshot:mypylib%2F0.2.1%2Bsnapshot%2Fmypylib-0.2.1%2Bsnapshot-py3-none-any.whl",
+                "artifact_storage_source_uri": "${responseSearch.items[0].assets[0].path}",
                 "context": {
                     "git": {
-                        "url": "https://github.com/lsantana486/test-pythonlib",
-                        "revision_id": "03916dddbb3b4aad2adb3bc0f66f32d140e1db0b"
+                        "url": "${env.GIT_URL}",
+                        "revision_id": "${shortCommit}"
                     },
                     "labels": {}
                 }
             },
-            "trigger_id": "03916dddbb3b4aad2adb3bc0f66f32d140e1db0b",
+            "trigger_id": "${shortCommit}",
             "builder_version": "1.0.0"
         },
         "provenance_bytes": "Z3JhZmVhcw=="
