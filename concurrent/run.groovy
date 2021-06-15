@@ -1,21 +1,20 @@
-def barrier = createBarrier count: 3;
-boolean out = false
+def barrier = createBarrier count: 2;
 parallel(
-        await1: {
-            awaitBarrier barrier
-            echo "out=${out}"
-        },
-        await2: {
-            awaitBarrier (barrier){
-                sleep 2 //simulate a long time execution.
-            }
-            echo "out=${out}"
-        },
-        await3: {
-            awaitBarrier (barrier){
-                sleep 3 //simulate a long time execution.
-                out = true
-            }
-            echo "out=${out}"
-        }
+    await1: {
+      awaitBarrier (barrier){
+        sleep 1
+        echo "Inside Await 1 after sleep 1"
+        sleep 5
+        echo "Inside Await 1 after sleep 5"
+      }
+    },
+    await3: {
+      awaitBarrier (barrier){
+        sleep 3
+        echo "Inside Await 3 after sleep 3"
+        sleep 2
+        echo "Inside Await 3 after sleep 2"
+      }
+    }
 )
+echo "Outside parallalel"
