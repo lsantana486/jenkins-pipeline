@@ -22,7 +22,7 @@ tasksSettings = [
   [
     name: "taskF",
     exec: "sleep 4"
-  ]
+  ],
   [
     name: "taskG",
     exec: "sleep 4"
@@ -54,7 +54,7 @@ tasksSettings = [
   [
     name: "taskN",
     exec: "sleep 4"
-  ]
+  ],
   [
     name: "taskO",
     exec: "sleep 4"
