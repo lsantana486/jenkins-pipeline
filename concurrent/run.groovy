@@ -1,10 +1,10 @@
 def tasks = [
   [
-    name: "TaskA"
+    name: "TaskA",
     exec: "sleep 5"
   ],
   [
-    name: "TaskB"
+    name: "TaskB",
     exec: "sleep 3"
   ]
 ]
