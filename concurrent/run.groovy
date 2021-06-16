@@ -12,6 +12,7 @@ def barrier = createBarrier count: tasksSettings.size();
 echo "Start pipeline"
 def tasks = [:]
 for (taskSettings in tasksSettings) {
+  echo "${taskSettings.name}"
   tasks["${taskSettings.name}"] = {
     awaitBarrier (barrier){
       echo "Start ${taskSettings.name}"
@@ -20,6 +21,7 @@ for (taskSettings in tasksSettings) {
     }
   }
 }
+echo "${tasks}"
 parallel tasks
 /*parallel(
     taskA: {
