@@ -1,6 +1,23 @@
-def barrier = createBarrier count: 2;
+def tasks = [
+  [
+    name: "TaskA"
+    exec: "sleep 5"
+  ],
+  [
+    name: "TaskB"
+    exec: "sleep 3"
+  ]
+]
+def barrier = createBarrier count: tasks.size();
 echo "Start pipeline"
-parallel(
+for (task in tasks) {
+  awaitBarrier (barrier){
+    echo "Start ${task.name}"
+    sh "${task.exec}"
+    echo "End ${task.name}"
+  }
+}
+/*parallel(
     taskA: {
       awaitBarrier (barrier){
         echo "Start taskA"
@@ -15,5 +32,6 @@ parallel(
         echo "End taskB"
       }
     }
-)
+)*/
+
 echo "End pipeline"
