@@ -1,11 +1,15 @@
 tasksSettings = [
   [
     name: "taskA",
-    exec: "sleep 5"
+    exec: "sleep 6"
   ],
   [
     name: "taskB",
     exec: "sleep 3"
+  ],
+  [
+    name: "taskC",
+    exec: "sleep 1"
   ]
 ]
 def barrier = createBarrier count: tasksSettings.size();
