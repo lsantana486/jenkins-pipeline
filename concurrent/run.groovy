@@ -1,4 +1,4 @@
-def tasksSettings = [
+tasksSettings = [
   [
     name: "taskA",
     exec: "sleep 5"
@@ -14,17 +14,9 @@ def tasks = [:]
 for (taskSettings in tasksSettings) {
   echo "${taskSettings.name}"
   tasks["${taskSettings.name}"] = {
-    /*awaitBarrier (barrier){
-      echo "Start ${taskSettings.name}"
-      sh "${taskSettings.exec}"
-      echo "End ${taskSettings.name}"
-    }*/
-    echo "Start ${taskSettings.name}"
-    sh "${taskSettings.exec}"
-    echo "End ${taskSettings.name}"
+    execQueue()
   }
 }
-echo "${tasks}"
 parallel tasks
 /*parallel(
     taskA: {
@@ -44,3 +36,10 @@ parallel tasks
 )*/
 
 echo "End pipeline"
+
+def execQueue(){
+  def taskSettings = tasksSettings.pop()
+  echo "Start ${taskSettings.name}"
+  sh "${taskSettings.exec}"
+  echo "End ${taskSettings.name}"
+}
