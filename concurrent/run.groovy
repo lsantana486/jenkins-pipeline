@@ -1,20 +1,19 @@
 def barrier = createBarrier count: 2;
+echo "Start pipeline"
 parallel(
-    await1: {
+    taskA: {
       awaitBarrier (barrier){
-        sleep 1
-        echo "Inside Await 1 after sleep 1"
+        echo "Start taskA"
         sleep 5
-        echo "Inside Await 1 after sleep 5"
+        echo "End taskA"
       }
     },
-    await3: {
+    taskB: {
       awaitBarrier (barrier){
-        sleep 3
-        echo "Inside Await 3 after sleep 3"
+        echo "Start taskB"
         sleep 2
-        echo "Inside Await 3 after sleep 2"
+        echo "End taskB"
       }
     }
 )
-echo "Outside parallalel"
+echo "End pipeline"
