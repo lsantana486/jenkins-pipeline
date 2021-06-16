@@ -14,11 +14,14 @@ def tasks = [:]
 for (taskSettings in tasksSettings) {
   echo "${taskSettings.name}"
   tasks["${taskSettings.name}"] = {
-    awaitBarrier (barrier){
+    /*awaitBarrier (barrier){
       echo "Start ${taskSettings.name}"
       sh "${taskSettings.exec}"
       echo "End ${taskSettings.name}"
-    }
+    }*/
+    echo "Start ${taskSettings.name}"
+    sh "${taskSettings.exec}"
+    echo "End ${taskSettings.name}"
   }
 }
 echo "${tasks}"
