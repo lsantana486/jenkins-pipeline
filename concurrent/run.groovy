@@ -68,7 +68,6 @@ tasksSettings = [
     exec: "sleep 4"
   ]
 ]
-echo "Start pipeline"
 chunkTasksSettings = tasksSettings.collate(5)
 def tasks = [:]
 chunkTasksSettings.eachWithIndex {
@@ -84,7 +83,13 @@ chunkTasksSettings.eachWithIndex {
     execQueue()
   }
 }*/
+stage("Start") {
+  echo "Start pipeline"
+}
 parallel tasks
+stage("End") {
+  echo "End pipeline"
+}
 /*def barrier = createBarrier count: tasksSettings.size();
 parallel(
     taskA: {
@@ -103,7 +108,6 @@ parallel(
     }
 )*/
 
-echo "End pipeline"
 
 def execQueue(){
   def chunkTaskSettings = chunkTasksSettings.pop()
