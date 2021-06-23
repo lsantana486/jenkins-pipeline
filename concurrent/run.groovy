@@ -69,13 +69,21 @@ tasksSettings = [
   ]
 ]
 echo "Start pipeline"
+chunkTasksSettings = tasksSettings.collate(5)
 def tasks = [:]
-for (taskSettings in tasksSettings) {
-  echo "${taskSettings.name}"
-  tasks["${taskSettings.name}"] = {
+chunkTasksSettings.eachWithIndex {
+  entry, index ->
+  echo "Process chunk-${index}"
+  tasks["Process chunk-${index}"] = {
     execQueue()
   }
 }
+/*for (chunkTaskSettings in chunkTasksSettings) {
+  echo "${}"
+  tasks["${taskSettings.name}"] = {
+    execQueue()
+  }
+}*/
 parallel tasks
 /*def barrier = createBarrier count: tasksSettings.size();
 parallel(
@@ -98,8 +106,10 @@ parallel(
 echo "End pipeline"
 
 def execQueue(){
-  def taskSettings = tasksSettings.pop()
-  echo "Start ${taskSettings.name}"
-  sh "${taskSettings.exec}"
-  echo "End ${taskSettings.name}"
+  def chunkTaskSettings = chunkTasksSettings.pop()
+  for (taskSettings in chunkTaskSettings) {
+    echo "Start ${taskSettings.name}"
+    sh "${taskSettings.exec}"
+    echo "End ${taskSettings.name}"
+  }
 }
