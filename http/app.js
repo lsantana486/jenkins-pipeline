@@ -1,23 +1,3 @@
-def mapToJson(jsonMap) {
-    writeJSON(json: jsonMap, file: 'tmp.json')
-    return sh(label: 'mapToJson', script: "cat tmp.json", returnStdout: true)
-}
-
-def packageJson = """
-{
-  "name": "elk-ingest",
-  "version": "1.0.0",
-  "description": "",
-  "main": "app.js",
-  "dependencies": {
-    "aws-sdk": "^2.651.0"
-  },
-  "scripts": {},
-  "devDependencies": {}
-}
-"""
-
-def runnerCode = """
 const AWS = require('aws-sdk');
 const fs = require('fs')
 
@@ -70,38 +50,3 @@ function buildRequest(endpoint, region, data) {
 }
 
 execRequest();
-"""
-def document = [
-    id: '7a698e0d-5235-4d6b-b3c9-684f33b31ed4',
-    '@timestamp': '2021-04-19T14:59:39.000Z',
-    appgroup: 'apptmwf',
-    application: 'hdrwf',
-    service: 'acquire',
-    runtime: 'python',
-    'mstack_type': 'v3-lambda'
-]
-
-def index = [
-    index: [
-        '_index': 'mstack360-poc',
-        '_id': '7a698e0d-5235-4d6b-b3c9-684f33b31ed4'
-    ]
-]
-
-def payload = """
-${mapToJson(index)}
-${mapToJson(document)}
-"""
-
-def payloadFile = '/tmp/payload'
-
-sh "echo '${payload}' | tee '${payloadFile}'"
-sh "echo '${packageJson}' | tee package.json"
-sh "echo '${runnerCode}' | tee app.js"
-sh "npm install"
-
-def endpoint = 'search-lsantana-sgppskvlgamskg4saasbs2rpca.us-east-1.es.amazonaws.com'
-def region = 'us-east-1'
-withAWS(credentials: "awspoc", duration: 900, roleSessionName: "jenkins-session", region: "us-east-1") {
-    sh "node app.js --endpoint=${endpoint} --region=${region} --data-file=/tmp/payload --access-key=${user} --secret-key=${pass}"
-}

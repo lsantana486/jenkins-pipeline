@@ -1,0 +1,13 @@
+{
+  "name": "elk-ingest",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "dependencies": {
+    "aws-sdk": "^2.651.0"
+  },
+  "scripts": {
+    "ingest": "node app.js --ak=1 --bk=2"
+  },
+  "devDependencies": {}
+}
