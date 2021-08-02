@@ -37,8 +37,9 @@ function execRequest() {
     const signer = new AWS.Signers.V4(requestParams, 'es');
     signer.addAuthorization(
         {
-            accessKeyId: inputs['access-key'],
-            secretAccessKey: inputs['secret-key']
+            accessKeyId: process.env['AWS_ACCESS_KEY_ID'],
+            secretAccessKey: process.env['AWS_SECRET_ACCESS_KEY'],
+            sessionToken: process.env['AWS_SESSION_TOKEN']
         }, 
         new Date()
     );
@@ -97,12 +98,12 @@ def payloadFile = '/tmp/payload'
 def endpoint = 'search-lsantana-sgppskvlgamskg4saasbs2rpca.us-east-1.es.amazonaws.com'
 def region = 'us-east-1'
 
-docker.image('node:12').inside('--entrypoint ""') {
+docker.image('node:12').inside('--entrypoint "" -u 0:0') {
     sh "echo '${payload}' | tee '${payloadFile}'"
     sh "echo '${packageJson}' | tee package.json"
     sh "echo '${runnerCode}' | tee app.js"
     sh "npm install"
     withAWS(credentials: "awspoc", duration: 900, roleSessionName: "jenkins-session", region: "us-east-1") {
-        sh "node app.js --endpoint=${endpoint} --region=${region} --data-file=/tmp/payload --access-key=${user} --secret-key=${pass}"
+        sh "node app.js --endpoint=${endpoint} --region=${region} --data-file=/tmp/payload"
     }
 }
