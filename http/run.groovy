@@ -21,10 +21,10 @@ def endpoint = "search-lsantana-sgppskvlgamskg4saasbs2rpca.us-east-1.es.amazonaw
 def payload = '''{ "index": { "_index": "mstack360-poc-notes", "_id": "6e568f1e-5235-4d6b-b3c9-684f33b31ed5" } }
 {"name":"wm-demo-lib","type":"note","shortDescription":"This is a test","longDescription":"This is a test using ELK to save metadata for wm-demo-lib","kind":"BUILD","build":{"builderVersion":"1.0.0","signature":{"publicKey":"","signature":"Z3JhZmVhcw==","keyId":"04A49FE3","keyType":"PGPKEY"}},"id":"6e568f1e-5235-4d6b-b3c9-684f33b31ed5","@timestamp":"2021-08-01T01:00:00.000Z"}'''
 def request = new DefaultRequest<String>("es")
-def body = new ByteArrayInputStream(payload.getBytes())
+def body = payload.getBytes()
 request.setEndpoint(URI.create("https://${endpoint}"))
 request.setHttpMethod(HttpMethodName.POST)
-request.setContent(body)
+request.setContent(new ByteArrayInputStream(body))
 request.setHeaders(
     [
         'Host': 'search-ps-logs-preprod-applogs-ou4fjmihj4tkdmcuryv6pnxtuy.us-east-1.es.amazonaws.com',
