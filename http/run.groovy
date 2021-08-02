@@ -94,14 +94,15 @@ ${mapToJson(document)}
 """
 
 def payloadFile = '/tmp/payload'
-
-sh "echo '${payload}' | tee '${payloadFile}'"
-sh "echo '${packageJson}' | tee package.json"
-sh "echo '${runnerCode}' | tee app.js"
-sh "npm install"
-
 def endpoint = 'search-lsantana-sgppskvlgamskg4saasbs2rpca.us-east-1.es.amazonaws.com'
 def region = 'us-east-1'
-withAWS(credentials: "awspoc", duration: 900, roleSessionName: "jenkins-session", region: "us-east-1") {
-    sh "node app.js --endpoint=${endpoint} --region=${region} --data-file=/tmp/payload --access-key=${user} --secret-key=${pass}"
+
+docker.image('node:12').inside('--entrypoint ""') {
+    sh "echo '${payload}' | tee '${payloadFile}'"
+    sh "echo '${packageJson}' | tee package.json"
+    sh "echo '${runnerCode}' | tee app.js"
+    sh "npm install"
+    withAWS(credentials: "awspoc", duration: 900, roleSessionName: "jenkins-session", region: "us-east-1") {
+        sh "node app.js --endpoint=${endpoint} --region=${region} --data-file=/tmp/payload --access-key=${user} --secret-key=${pass}"
+    }
 }
