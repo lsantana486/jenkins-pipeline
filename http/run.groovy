@@ -12,22 +12,10 @@ import com.amazonaws.Response
 import com.amazonaws.http.AmazonHttpClient
 import com.amazonaws.http.ExecutionContext
 import com.amazonaws.http.HttpResponseHandler
+import com.amazonaws.http.JsonErrorResponseHandler;
+import com.amazonaws.http.JsonResponseHandler;
 import groovy.json.JsonSlurper
 import groovy.io.FileType
-
-public final class DummyHandler<T> implements HttpResponseHandler<T> {
-    private final T preCannedResponse;
-    public DummyHandler(T preCannedResponse) { this.preCannedResponse = preCannedResponse; }
-
-    @Override
-    public T handle(response) throws Exception {
-        System.out.println(IOUtils.toString(response.getContent()));
-        return preCannedResponse;
-    }
-
-    @Override
-    public boolean needsConnectionLeftOpen() { return false; }
-}
 
 def endpoint = "search-lsantana-sgppskvlgamskg4saasbs2rpca.us-east-1.es.amazonaws.com"
 def payload = '''{ "index": { "_index": "mstack360-poc-notes", "_id": "6e568f1e-5235-4d6b-b3c9-684f33b31ed5" } }
@@ -56,7 +44,7 @@ withAWS(credentials: "awspoc", duration: 900, roleSessionName: "jenkins-session"
             .requestExecutionBuilder()
             .executionContext(new ExecutionContext(true))
             .request(request)
-            .errorResponseHandler(new DummyHandler<>(new AmazonServiceException("oops")))
-            .execute(new DummyHandler<>(new AmazonWebServiceResponse<Void>()));
+            .errorResponseHandler(new JsonErrorResponseHandler())
+            .execute(new JsonResponseHandler());
     awsResponse = response.getAwsResponse();
 }
