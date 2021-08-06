@@ -14,11 +14,13 @@ def getMStack360Runtime(recursive=true) {
     } else if(recursive) {
         def items = findFiles()
         for (item in items) {
-          if(item.directory && !(item.name ==~ /\.git.*/) && !(item.name.contains('@'))) {
-            tmpRuntime = getMStack360Runtime(false)
-            if(!tmpRuntime.equals("unknown")) {
-              sh "ls -la"
-              runtime = tmpRuntime
+          if(item.directory && !item.name.contains('.git') && !item.name.contains('@')) {
+            dir(item.name) {
+              tmpRuntime = getMStack360Runtime(false)
+              if(!tmpRuntime.equals("unknown")) {
+                sh "ls -la"
+                runtime = tmpRuntime
+              }
             }
           }
         }
