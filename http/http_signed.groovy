@@ -17,43 +17,58 @@ import com.amazonaws.http.JsonResponseHandler;
 import groovy.json.JsonSlurper
 import groovy.io.FileType
 
+public class StringResponseHandler implements HttpResponseHandler<AmazonWebServiceResponse<String>> {
 
+    @Override
+    public AmazonWebServiceResponse<String> handle(com.amazonaws.http.HttpResponse response) throws IOException {
 
+        AmazonWebServiceResponse<String> awsResponse = new AmazonWebServiceResponse<>();
+
+        //putting response string in the result, available outside the handler
+        awsResponse.setResult((String) IOUtils.toString(response.getContent()));
+
+        return awsResponse;
+    }
+
+    @Override
+    public boolean needsConnectionLeftOpen() {
+        return false;
+    }
+
+} 
+
+withAWS(credentials: "awspoc", duration: 900, roleSessionName: "jenkins-session", region: "us-east-1") {
+    sendRequest("${env.AWS_ACCESS_KEY_ID}".toString(), "${env.AWS_SECRET_ACCESS_KEY}".toString())
+}
 
 @NonCPS
-def sendRequest() {
-  def endpoint = "search-lsantana-sgppskvlgamskg4saasbs2rpca.us-east-1.es.amazonaws.com"
+def sendRequest(user, pass) {
+  def endpoint = "search-lsantana-sgppskvlgamskg4saasbs2rpca.us-east-1.es.amazonaws.com".toString()
   def payload = '''{ "index": { "_index": "mstack360-poc-notes", "_id": "6e568f1e-5235-4d6b-b3c9-684f33b31ed5" } }
-{"name":"wm-demo-lib","type":"note","shortDescription":"This is a test","longDescription":"This is a test using ELK to save metadata for wm-demo-lib","kind":"BUILD","build":{"builderVersion":"1.0.0","signature":{"publicKey":"","signature":"Z3JhZmVhcw==","keyId":"04A49FE3","keyType":"PGPKEY"}},"id":"6e568f1e-5235-4d6b-b3c9-684f33b31ed5","@timestamp":"2021-08-01T01:00:00.000Z"}'''
-  def request = new DefaultRequest<String>("es")
+{"name":"wm-demo-lib","type":"note","shortDescription":"This is a test","longDescription":"This is a test using ELK to save metadata for wm-demo-lib","kind":"BUILD","build":{"builderVersion":"1.0.0","signature":{"publicKey":"","signature":"Z3JhZmVhcw==","keyId":"04A49FE3","keyType":"PGPKEY"}},"id":"6e568f1e-5235-4d6b-b3c9-684f33b31ed5","@timestamp":"2021-08-01T01:00:00.000Z"}'''.toString()
+  def request = new DefaultRequest<Void>("es".toString())
   def body = payload.getBytes()
-  request.setEndpoint(URI.create("https://${endpoint}"))
+  request.setEndpoint(URI.create("https://${endpoint}".toString()))
   request.setHttpMethod(HttpMethodName.POST)
   request.setContent(new ByteArrayInputStream(body))
   request.setHeaders(
     [
-        'Host': 'search-ps-logs-preprod-applogs-ou4fjmihj4tkdmcuryv6pnxtuy.us-east-1.es.amazonaws.com',
-        'Content-Type': 'application/json',
-        'Content-Length': "${body.size()}"
+        'Host': 'search-ps-logs-preprod-applogs-ou4fjmihj4tkdmcuryv6pnxtuy.us-east-1.es.amazonaws.com'.toString(),
+        'Content-Type': 'application/json'.toString(),
+        'Content-Length': "${body.size()}".toString()
     ]
   )
-  request.setResourcePath("/_bulk")
-  signRequest(request)
-}
-
-@NonCPS
-def signRequest(request) {
+  request.setResourcePath("/_bulk".toString())
+  
   def signer = new AWS4Signer(false)
-  signer.setRegionName("us-east-1")
-  signer.setServiceName("es")
-  withAWS(credentials: "awspoc", duration: 900, roleSessionName: "jenkins-session", region: "us-east-1") {
-    signer.sign(request, new BasicAWSCredentials("${user}", "${pass}"))
-    def response = new AmazonHttpClient(new ClientConfiguration())
-            .requestExecutionBuilder()
-            .executionContext(new ExecutionContext(true))
-            .request(request)
-            .errorResponseHandler(new JsonErrorResponseHandler())
-            .execute(new JsonResponseHandler());
-    awsResponse = response.getAwsResponse();
-  }
+  signer.setRegionName("us-east-1".toString())
+  signer.setServiceName("es".toString())
+  def creds = new BasicAWSCredentials(user, pass)
+  signer.sign(request, creds)
+  def response = new AmazonHttpClient(new ClientConfiguration())
+    .requestExecutionBuilder()
+    .executionContext(new ExecutionContext(false))
+    .request(request)
+    .execute(new StringResponseHandler());
+  awsResponse = response.getAwsResponse().getResult();
 }
