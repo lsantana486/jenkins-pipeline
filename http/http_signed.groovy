@@ -17,28 +17,36 @@ import com.amazonaws.http.JsonResponseHandler;
 import groovy.json.JsonSlurper
 import groovy.io.FileType
 
-def endpoint = "search-lsantana-sgppskvlgamskg4saasbs2rpca.us-east-1.es.amazonaws.com"
-def payload = '''{ "index": { "_index": "mstack360-poc-notes", "_id": "6e568f1e-5235-4d6b-b3c9-684f33b31ed5" } }
+
+
+
+@NonCPS
+def sendRequest() {
+  def endpoint = "search-lsantana-sgppskvlgamskg4saasbs2rpca.us-east-1.es.amazonaws.com"
+  def payload = '''{ "index": { "_index": "mstack360-poc-notes", "_id": "6e568f1e-5235-4d6b-b3c9-684f33b31ed5" } }
 {"name":"wm-demo-lib","type":"note","shortDescription":"This is a test","longDescription":"This is a test using ELK to save metadata for wm-demo-lib","kind":"BUILD","build":{"builderVersion":"1.0.0","signature":{"publicKey":"","signature":"Z3JhZmVhcw==","keyId":"04A49FE3","keyType":"PGPKEY"}},"id":"6e568f1e-5235-4d6b-b3c9-684f33b31ed5","@timestamp":"2021-08-01T01:00:00.000Z"}'''
-def request = new DefaultRequest<String>("es")
-def body = payload.getBytes()
-request.setEndpoint(URI.create("https://${endpoint}"))
-request.setHttpMethod(HttpMethodName.POST)
-request.setContent(new ByteArrayInputStream(body))
-request.setHeaders(
+  def request = new DefaultRequest<String>("es")
+  def body = payload.getBytes()
+  request.setEndpoint(URI.create("https://${endpoint}"))
+  request.setHttpMethod(HttpMethodName.POST)
+  request.setContent(new ByteArrayInputStream(body))
+  request.setHeaders(
     [
         'Host': 'search-ps-logs-preprod-applogs-ou4fjmihj4tkdmcuryv6pnxtuy.us-east-1.es.amazonaws.com',
         'Content-Type': 'application/json',
         'Content-Length': "${body.size()}"
     ]
-)
-request.setResourcePath("/_bulk")
+  )
+  request.setResourcePath("/_bulk")
+  signRequest(request)
+}
 
-
-def signer = new AWS4Signer(false)
-signer.setRegionName("us-east-1")
-signer.setServiceName("es")
-withAWS(credentials: "awspoc", duration: 900, roleSessionName: "jenkins-session", region: "us-east-1") {
+@NonCPS
+def signRequest(request) {
+  def signer = new AWS4Signer(false)
+  signer.setRegionName("us-east-1")
+  signer.setServiceName("es")
+  withAWS(credentials: "awspoc", duration: 900, roleSessionName: "jenkins-session", region: "us-east-1") {
     signer.sign(request, new BasicAWSCredentials("${user}", "${pass}"))
     def response = new AmazonHttpClient(new ClientConfiguration())
             .requestExecutionBuilder()
@@ -47,4 +55,5 @@ withAWS(credentials: "awspoc", duration: 900, roleSessionName: "jenkins-session"
             .errorResponseHandler(new JsonErrorResponseHandler())
             .execute(new JsonResponseHandler());
     awsResponse = response.getAwsResponse();
+  }
 }
