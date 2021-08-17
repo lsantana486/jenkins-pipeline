@@ -5,9 +5,28 @@ import com.amazonaws.http.HttpMethodName
 import groovy.json.JsonSlurper
 
 
-def endpoint = "search-lsantana-dnx3pxw56bwwkvija6naqyoz24.us-east-2.es.amazonaws.com"
-def payload = '''{ "index": { "_index": "mstack360-poc-notes", "_id": "6e568f1e-5235-4d6b-b3c9-684f33b31ed5" } }
-{"name":"wm-demo-lib","type":"note","shortDescription":"This is a test","longDescription":"This is a test using ELK to save metadata for wm-demo-lib","kind":"BUILD","build":{"builderVersion":"1.0.0","signature":{"publicKey":"","signature":"Z3JhZmVhcw==","keyId":"04A49FE3","keyType":"PGPKEY"}},"id":"6e568f1e-5235-4d6b-b3c9-684f33b31ed5","@timestamp":"2021-08-01T01:00:00.000Z"}'''
+def endpoint = "search-lsantana-sgppskvlgamskg4saasbs2rpca.us-east-1.es.amazonaws.com"
+def document = [
+    id: '8a698e0d-5235-4d6b-b3c9-684f33b31ed4',
+    '@timestamp': '2021-04-19T14:59:39.000Z',
+    appgroup: 'apptmwf',
+    application: 'hdrwf',
+    service: 'acquire',
+    runtime: 'python',
+    'mstack_type': 'lambda'
+]
+
+def index = [
+    index: [
+        '_index': 'mstack360-poc',
+        '_id': '8a698e0d-5235-4d6b-b3c9-684f33b31ed4'
+    ]
+]
+
+def payload = """
+${mapToJson(index)}
+${mapToJson(document)}
+"""
 
 withAWS(credentials: "awspoc", duration: 900, roleSessionName: "jenkins-session", region: "us-east-1") {
   def awsAccessKeys = [
@@ -18,6 +37,11 @@ withAWS(credentials: "awspoc", duration: 900, roleSessionName: "jenkins-session"
   println "SIGNED REQUEST: ${signedRequest}"
   def response = invokeAPI(signedRequest)
   println "RESPONSE: ${response}"
+}
+
+def mapToJson(jsonMap) {
+    writeJSON(json: jsonMap, file: 'tmp.json')
+    return sh(label: 'mapToJson', script: "cat tmp.json", returnStdout: true)
 }
 
 @NonCPS
@@ -44,14 +68,14 @@ def generateElasticSignedRequest(endpoint, payload, awsAccessKeys, region="us-ea
   return [
     headers: request.getHeaders(),
     endpoint: "${request.getEndpoint()}${request.getResourcePath()}",
-    content: request.getContent(),
-    method: request.getHttpMethod()
+    content: body,
+    method: request.getHttpMethod().toString()
   ]
 }
 
 def invokeAPI(signedRequest) {
   def conn = new URL(signedRequest.endpoint).openConnection()
-  conn.setRequestMethod(signedRequest.method)
+  conn.setRequestMethod("POST")
   signedRequest.headers.each { key, value -> conn.setRequestProperty(key, value)}
   conn.setDoOutput(true)
   conn.getOutputStream().write(signedRequest.content)

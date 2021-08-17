@@ -96,7 +96,7 @@ ${mapToJson(document)}
 """
 
 def payloadFile = '/tmp/payload'
-def endpoint = 'search-lsantana-dnx3pxw56bwwkvija6naqyoz24.us-east-2.es.amazonaws.com'
+def endpoint = 'search-lsantana-sgppskvlgamskg4saasbs2rpca.us-east-1.es.amazonaws.com'
 def region = 'us-east-1'
 
 docker.image('node:12').inside('--entrypoint "" -u 0:0') {
