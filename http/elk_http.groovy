@@ -2,6 +2,7 @@ import com.amazonaws.DefaultRequest
 import com.amazonaws.auth.AWS4Signer
 import com.amazonaws.auth.BasicAWSCredentials
 import com.amazonaws.http.HttpMethodName
+import groovy.json.JsonSlurper
 
 
 def endpoint = "search-lsantana-dnx3pxw56bwwkvija6naqyoz24.us-east-2.es.amazonaws.com"
@@ -15,6 +16,8 @@ withAWS(credentials: "awspoc", duration: 900, roleSessionName: "jenkins-session"
   ]
   def signedRequest = generateElasticSignedRequest(endpoint, payload, awsAccessKeys)
   println "SIGNED REQUEST: ${signedRequest}"
+  def response = invokeAPI(signedRequest)
+  println "RESPONSE: ${response}"
 }
 
 @NonCPS
@@ -44,4 +47,16 @@ def generateElasticSignedRequest(endpoint, payload, awsAccessKeys, region="us-ea
     content: request.getContent(),
     method: request.getHttpMethod()
   ]
+}
+
+def invokeAPI(signedRequest) {
+  def conn = new URL(signedRequest.endpoint).openConnection()
+  conn.setRequestMethod(signedRequest.method)
+  signedRequest.headers.each { key, value -> conn.setRequestProperty(key, value)}
+  conn.setDoOutput(true)
+  conn.getOutputStream().write(signedRequest.content)
+  JsonSlurper jsonSlurper = new JsonSlurper()
+  def response = conn.getContent().newReader()
+  def apiResponse = jsonSlurper.parse(response)
+  return apiResponse
 }
