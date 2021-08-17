@@ -17,28 +17,26 @@ import com.amazonaws.http.JsonResponseHandler;
 import groovy.json.JsonSlurper
 import groovy.io.FileType
 
-public class StringResponseHandler implements HttpResponseHandler<AmazonWebServiceResponse<String>> {
-
+class StringResponseHandler implements HttpResponseHandler<AmazonWebServiceResponse<String>> {
+    
     @Override
-    public AmazonWebServiceResponse<String> handle(com.amazonaws.http.HttpResponse response) throws IOException {
+    AmazonWebServiceResponse<String> handle(com.amazonaws.http.HttpResponse response) throws IOException {
 
         AmazonWebServiceResponse<String> awsResponse = new AmazonWebServiceResponse<>();
-
-        //putting response string in the result, available outside the handler
         awsResponse.setResult((String) IOUtils.toString(response.getContent()));
-
         return awsResponse;
     }
-
+    
     @Override
-    public boolean needsConnectionLeftOpen() {
+    boolean needsConnectionLeftOpen() {
         return false;
     }
 
 } 
 
 withAWS(credentials: "awspoc", duration: 900, roleSessionName: "jenkins-session", region: "us-east-1") {
-    sendRequest("${env.AWS_ACCESS_KEY_ID}".toString(), "${env.AWS_SECRET_ACCESS_KEY}".toString())
+    def resp = sendRequest("${env.AWS_ACCESS_KEY_ID}".toString(), "${env.AWS_SECRET_ACCESS_KEY}".toString())
+    println "RESPONSE: ${resp}"
 }
 
 @NonCPS
@@ -61,14 +59,16 @@ def sendRequest(user, pass) {
   request.setResourcePath("/_bulk".toString())
   
   def signer = new AWS4Signer(false)
-  signer.setRegionName("us-east-1".toString())
+  signer.setRegionName("us-east-2".toString())
   signer.setServiceName("es".toString())
   def creds = new BasicAWSCredentials(user, pass)
   signer.sign(request, creds)
-  def response = new AmazonHttpClient(new ClientConfiguration())
-    .requestExecutionBuilder()
-    .executionContext(new ExecutionContext(false))
-    .request(request)
-    .execute(new StringResponseHandler());
-  awsResponse = response.getAwsResponse().getResult();
+  return request.getHeaders()
+  //def response = new AmazonHttpClient(new ClientConfiguration())
+  //  .requestExecutionBuilder()
+  //  .executionContext(new ExecutionContext(true))
+  //  .request(request)
+  //  .errorResponseHandler(new StringResponseHandler())
+  //  .execute(new StringResponseHandler())
+  //return response.getAwsResponse().getResult()
 }
