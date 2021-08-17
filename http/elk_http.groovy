@@ -1,6 +1,8 @@
 import com.amazonaws.DefaultRequest
 import com.amazonaws.auth.AWS4Signer
 import com.amazonaws.auth.BasicAWSCredentials
+import com.amazonaws.http.HttpMethodName
+
 
 def endpoint = "search-lsantana-dnx3pxw56bwwkvija6naqyoz24.us-east-2.es.amazonaws.com"
 def payload = '''{ "index": { "_index": "mstack360-poc-notes", "_id": "6e568f1e-5235-4d6b-b3c9-684f33b31ed5" } }
