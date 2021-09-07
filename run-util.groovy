@@ -1,8 +1,8 @@
 node('master') {
   wrap([$class: 'TimestamperBuildWrapper']) {
     checkout scm 
-    util = load "util.groovy"
-    util.testCL {
+    def util = load "util.groovy"
+    util.testCl {
       println "INSIDE"
     }
   } 
